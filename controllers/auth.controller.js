@@ -1,5 +1,5 @@
 const AuthService = require("../services/auths.service");
-const jwt = require("jsonwebtoken");
+const Boom = require("boom");
 
 class AuthController {
   constructor() {
@@ -9,24 +9,19 @@ class AuthController {
   authLogin = async (req, res, next) => {
     const { nickname, password } = req.body;
     try {
-      const findAuth = await this.authService.findAuth(nickname);
-
-      if (!findAuth || password !== findAuth.password) {
-        return res
-          .status(412)
-          .json({ errorMessage: "닉네임 또는 패스워드를 확인해주세요." });
-      }
-
-      const token = jwt.sign(
-        { userId: findAuth.userId },
-        "customized-secret-key"
-      );
-
+      const token = await this.authService.login(nickname, password);
+      token;
       res.cookie("Authorization", `Bearer ${token}`);
       res.status(200).json({ token });
+      return;
     } catch (error) {
-      console.log(error.message);
-      return res.status(error.status).json({ errorMessage: error.message });
+      if (Boom.isBoom(error)) {
+        res
+          .status(error.output.statusCode)
+          .json({ errorMessage: error.output.payload.message });
+      } else {
+        res.status(500).json({ errorMessage: error.message });
+      }
     }
   };
 }
