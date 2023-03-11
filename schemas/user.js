@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   userId: {
-    type: String,
+    type: Number,
     required: true,
   },
 });

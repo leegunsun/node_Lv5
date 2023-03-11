@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const likesSchema = new mongoose.Schema({
   userId: {
-    type: String,
+    type: Number,
     required: true,
   },
   postId: {

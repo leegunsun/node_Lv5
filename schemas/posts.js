@@ -3,7 +3,7 @@ const commentsSchema = require("./comment.js");
 
 const postsSchema = new mongoose.Schema({
   userId: {
-    type: String,
+    type: Number,
     required: true,
   },
   postId: {
