@@ -1,10 +1,12 @@
 const LikeService = require("../services/likes.service");
+const Boom = require("boom");
 
 class LikeController {
   constructor() {
     this.likeService = new LikeService();
   }
 
+  // 좋아요한 게시물 찾기
   searchLike = async (req, res, next) => {
     const { userId } = res.locals.user;
     const findUser = await this.likeService.findLike(userId);
@@ -19,10 +21,25 @@ class LikeController {
     }
   };
 
+  // 좋아요 등록 및 취소
   toggleLike = async (req, res, next) => {
     const { userId } = res.locals.user;
     const { postId } = req.params;
-    const existsPosts = await Post.findOne({ postId: postId });
+    try {
+      const toggle = await this.likeService.toggleLike(userId, postId);
+      toggle;
+
+      res.status(200).json({ message: toggle });
+      return;
+    } catch (error) {
+      if (Boom.isBoom(error)) {
+        res
+          .status(error.output.statusCode)
+          .json({ errorMessage: error.output.payload.message });
+      } else {
+        res.status(500).json({ errorMessage: error.message });
+      }
+    }
   };
 }
 

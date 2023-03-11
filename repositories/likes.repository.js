@@ -13,6 +13,24 @@ class LikeRepository {
     return findLikes;
   };
 
+  findPostUserCheck = async (userId, postId) => {
+    const findLikes = await Like.findOne({ postId: postId, userId: userId });
+
+    return findLikes;
+  };
+
+  addLike = async (postId, userId) => {
+    const addLike = new Like({ postId: postId, userId: userId });
+
+    return await addLike.save();
+  };
+
+  deleteLike = async (postId, userId) => {
+    const deleteLike = await Like.deleteOne({ postId: postId, userId: userId });
+
+    return deleteLike;
+  };
+
   findOnePost = async (postId) => {
     const findLikes = await Like.findOne({ postId: postId });
 

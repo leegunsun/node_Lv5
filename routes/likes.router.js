@@ -8,6 +8,6 @@ const likeController = new LikeController();
 
 router.get("/", authMiddleware, likeController.searchLike);
 
-router.put("/posts/:postId", authMiddleware, likeController.toggleLike);
+router.put("/post/:postId", authMiddleware, likeController.toggleLike);
 
 module.exports = router;
