@@ -1,4 +1,5 @@
 const PostService = require("../services/posts.service");
+const Boom = require("boom");
 
 class PostController {
   constructor() {
@@ -8,17 +9,17 @@ class PostController {
   // 모든 Post를 가져온다
   getPosts = async (req, res, next) => {
     try {
-      const findAllPosts = await postService.findAllPosts();
-      if (findAllPosts.length) {
-        const assemblyPosts = await postService.assemblyPosts();
-        res.status(200).json({ posts: assemblyPosts });
-      } else {
-        return res.status(412).json({ errorMessage: "데이터가 없습니다." });
-      }
+      const posts = await this.postService.findAllPosts();
+      res.status(200).json({ posts: posts });
+      return;
     } catch (error) {
-      return res
-        .status(400)
-        .json({ errorMessage: "게시글 조회에 실패하였습니다." });
+      if (Boom.isBoom(error)) {
+        res
+          .status(error.output.statusCode)
+          .json({ errorMessage: error.output.payload.message });
+      } else {
+        res.status(500).json({ errorMessage: error.message });
+      }
     }
   };
 
@@ -28,17 +29,16 @@ class PostController {
 
     try {
       const findOne = await postService.getOnePost(postId);
-      if (findOne) {
-        return res.status(200).json({ post: findOne });
-      } else {
-        return res
-          .status(400)
-          .json({ errorMessage: "게시글 조회에 실패하였습니다." });
-      }
+      res.status(200).json({ post: findOne });
+      return;
     } catch (error) {
-      return res
-        .status(400)
-        .json({ errorMessage: "게시글 조회에 실패하였습니다." });
+      if (Boom.isBoom(error)) {
+        res
+          .status(error.output.statusCode)
+          .json({ errorMessage: error.output.payload.message });
+      } else {
+        res.status(500).json({ errorMessage: error.message });
+      }
     }
   };
 
@@ -47,32 +47,20 @@ class PostController {
     const { title, content } = req.body;
     const { userId } = res.locals.user;
 
-    if (!title && !content) {
-      return res
-        .status(412)
-        .json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
-    }
-
     try {
-      if (!title) {
-        return res
-          .status(412)
-          .json({ errorMessage: "게시글 제목의 형식이 일치하지 않습니다." });
-      } else if (!content) {
-        return res
-          .status(412)
-          .json({ errorMessage: "게시글 내용의 형식이 일치하지 않습니다." });
-      }
-
       const newPost = await this.postService.createPost(title, content, userId);
 
       res.status(201).json({ message: "게시글 작성에 성공하였습니다." });
 
       return newPost;
     } catch (error) {
-      return res
-        .status(400)
-        .json({ errorMessage: "게시글 작성에 실패하였습니다." });
+      if (Boom.isBoom(error)) {
+        res
+          .status(error.output.statusCode)
+          .json({ errorMessage: error.output.payload.message });
+      } else {
+        res.status(500).json({ errorMessage: error.message });
+      }
     }
   };
 

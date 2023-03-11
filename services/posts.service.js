@@ -1,4 +1,5 @@
 const PostRepository = require("../repositories/posts.repository");
+const Boom = require("boom");
 
 class PostService {
   constructor() {
@@ -7,9 +8,14 @@ class PostService {
 
   // Post 스키마로 정의된 모든 포스트를 찾는다
   findAllPosts = async () => {
-    const posts = await postRepository.findAllPosts();
+    const findAllPosts = await this.postRepository.findAllPosts();
+    const assemblyPosts = await this.postRepository.assemblyPosts();
 
-    return posts;
+    if (findAllPosts.length) {
+      return assemblyPosts;
+    } else {
+      throw Boom.preconditionFailed("데이터가 없습니다.");
+    }
   };
 
   // Post 스키마 + likes + comment를 더한 값을 반환한다.
@@ -21,18 +27,22 @@ class PostService {
 
   // postId값을 가진 하나의 포스트를 찾는다.
   getOnePost = async (postId) => {
-    const post = await postRepository.findOnePost({ postId: postId });
+    const findOne = await postRepository.findOnePost({ postId: postId });
     const result = {
-      postId: post.postId,
-      userId: post.userId,
-      nickname: post.nickname,
-      title: post.title,
-      content: post.content,
-      createdAt: post.createdAt,
-      updatedAt: post.updatedAt,
+      postId: findOne.postId,
+      userId: findOne.userId,
+      nickname: findOne.nickname,
+      title: findOne.title,
+      content: findOne.content,
+      createdAt: findOne.createdAt,
+      updatedAt: findOne.updatedAt,
     };
 
-    return result;
+    if (findOne) {
+      return result;
+    } else {
+      throw Boom.badRequest("게시글 조회에 실패하였습니다.");
+    }
   };
 
   // Post를 작성한다.
@@ -40,6 +50,17 @@ class PostService {
     const findOneUserNickName = await this.postRepository.findUserId(userId);
     const maxPostId = await this.postRepository.findSortPostId();
     const postId = maxPostId ? maxPostId.userId + 1 : 1;
+
+    if (!title && !content) {
+      throw Boom.preconditionFailed("데이터 형식이 올바르지 않습니다.");
+    }
+
+    if (!title) {
+      throw Boom.preconditionFailed("게시글 제목의 형식이 일치하지 않습니다.");
+    } else if (!content) {
+      throw Boom.preconditionFailed("게시글 내용의 형식이 일치하지 않습니다.");
+    }
+
     const createPostData = await this.postRepository.createPost(
       findOneUserNickName,
       title,

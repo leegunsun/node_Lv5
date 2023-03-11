@@ -13,7 +13,7 @@ class PostRepository {
 
   // Post 스키마 + likes + comment를 더한 값을 반환한다.
   assemblyPosts = async () => {
-    const posts = await PostRepository.findAllPosts();
+    const posts = await Post.find();
     const rename = await Promise.all(
       posts.map(async (ele) => {
         const likes = await Likes.find({ postId: ele.postId });
@@ -57,7 +57,7 @@ class PostRepository {
   // Post를 생성한다.
   createPost = async (nickname, title, content, userId, postId) => {
     const post = new Post({
-      nickname,
+      nickname: nickname.nickname,
       title,
       content,
       userId,
