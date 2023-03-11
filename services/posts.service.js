@@ -20,14 +20,19 @@ class PostService {
 
   // Post 스키마 + likes + comment를 더한 값을 반환한다.
   assemblyPosts = async () => {
-    const rename = await postRepository.assemblyPosts();
+    const rename = await this.postRepository.assemblyPosts();
 
     return rename;
   };
 
+  getFindOne = async (postId) => {
+    const findOne = await this.postRepository.findOnePost(postId);
+    return findOne;
+  };
+
   // postId값을 가진 하나의 포스트를 찾는다.
   getOnePost = async (postId) => {
-    const findOne = await postRepository.findOnePost({ postId: postId });
+    const findOne = await this.postRepository.findOnePost(postId);
     const result = {
       postId: findOne.postId,
       userId: findOne.userId,
@@ -37,10 +42,11 @@ class PostService {
       createdAt: findOne.createdAt,
       updatedAt: findOne.updatedAt,
     };
-
-    if (findOne) {
-      return result;
-    } else {
+    try {
+      if (findOne) {
+        return result;
+      }
+    } catch (error) {
       throw Boom.badRequest("게시글 조회에 실패하였습니다.");
     }
   };
@@ -49,7 +55,7 @@ class PostService {
   createPost = async (title, content, userId) => {
     const findOneUserNickName = await this.postRepository.findUserId(userId);
     const maxPostId = await this.postRepository.findSortPostId();
-    const postId = maxPostId ? maxPostId.userId + 1 : 1;
+    const postId = maxPostId ? maxPostId.postId + 1 : 1;
 
     if (!title && !content) {
       throw Boom.preconditionFailed("데이터 형식이 올바르지 않습니다.");
@@ -72,18 +78,51 @@ class PostService {
     return createPostData;
   };
 
-  // Post를 수정한다. //확인필요
-  updatePost = async (post, title, content) => {
-    const update = await this.postRepository.updatePost(post, title, content);
+  // Post를 수정한다.
+  updatePost = async (post, title, content, userId) => {
+    if (!title && !content) {
+      throw Boom.preconditionFailed("데이터 형식이 올바르지 않습니다.");
+    }
 
-    return update;
+    if (userId !== post.userId) {
+      throw Boom.preconditionFailed("게시글 수정의 권한이 존재하지 않습니다.");
+    }
+
+    if (!title) {
+      throw Boom.preconditionFailed("게시글 제목의 형식이 일치하지 않습니다.");
+    } else if (!content) {
+      throw Boom.preconditionFailed("게시글 내용의 형식이 일치하지 않습니다.");
+    }
+
+    if (post) {
+      const update = await this.postRepository.updatePost(post, title, content);
+      return update;
+    } else {
+      throw Boom.preconditionFailed("게시글이 정상적으로 수정되지 않았습니다.");
+    }
   };
 
   // Post를 삭제한다
-  deleteOne = async (postId) => {
-    const deletePost = await this.postRepository.deletePost(postId);
+  deleteOne = async (postId, userId) => {
+    const post = await this.postRepository.findOnePost(postId);
 
-    return deletePost;
+    if (!post) {
+      throw Boom.preconditionFailed("게시글이 존재하지 않습니다.");
+    }
+
+    if (post.userId == userId) {
+      try {
+        const deletePost = await this.postRepository.deletePost(postId);
+
+        return deletePost;
+      } catch (errer) {
+        throw Boom.preconditionFailed(
+          "게시글이 정상적으로 삭제되지 않았습니다."
+        );
+      }
+    } else {
+      throw Boom.preconditionFailed("게시글의 삭제 권한이 존재하지 않습니다.");
+    }
   };
 }
 

@@ -28,7 +28,7 @@ class PostController {
     const { postId } = req.params;
 
     try {
-      const findOne = await postService.getOnePost(postId);
+      const findOne = await this.postService.getOnePost(postId);
       res.status(200).json({ post: findOne });
       return;
     } catch (error) {
@@ -70,48 +70,25 @@ class PostController {
     const { title, content } = req.body;
     const { userId } = res.locals.user;
 
-    if (!title && !content) {
-      return res
-        .status(412)
-        .json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
-    }
-
     try {
-      const post = await this.postService.getOnePost(postId);
-
-      if (userId !== post.userId) {
-        return res
-          .status(403)
-          .json({ errorMessage: "게시글 수정의 권한이 존재하지 않습니다." });
-      }
-
-      if (!title) {
-        return res
-          .status(412)
-          .json({ errorMessage: "게시글 제목의 형식이 일치하지 않습니다." });
-      } else if (!content) {
-        return res
-          .status(412)
-          .json({ errorMessage: "게시글 내용의 형식이 일치하지 않습니다." });
-      }
-
-      if (post) {
-        const updatePost = await this.postService.updatePost(
-          post,
-          title,
-          content
-        );
-        res.status(200).json({ message: "게시글을 수정하였습니다." });
-        return updatePost;
-      } else {
-        return res
-          .status(401)
-          .json({ errorMessage: "게시글이 정상적으로 수정되지 않았습니다." });
-      }
+      const post = await this.postService.getFindOne(postId);
+      console.log(title);
+      const updatePost = await this.postService.updatePost(
+        post,
+        title,
+        content,
+        userId
+      );
+      res.status(200).json({ message: "게시글을 수정하였습니다." });
+      return updatePost;
     } catch {
-      return res
-        .status(400)
-        .json({ errorMessage: "게시글 수정에 실패하였습니다." });
+      if (Boom.isBoom(error)) {
+        res
+          .status(error.output.statusCode)
+          .json({ errorMessage: error.output.payload.message });
+      } else {
+        res.status(500).json({ errorMessage: error.message });
+      }
     }
   };
 
@@ -119,36 +96,22 @@ class PostController {
   deleteOnePost = async (req, res, next) => {
     const { userId } = res.locals.user;
     const { postId } = req.params;
-    const post = await this.postService.getOnePost(postId);
 
     try {
-      if (!post) {
-        return res
-          .status(404)
-          .json({ errorMessage: "게시글이 존재하지 않습니다." });
-      }
+      const post = await this.postService.deleteOne(postId, userId);
 
-      if (post.userId == userId) {
-        try {
-          const deletePost = await this.postService.deleteOne(postId);
-          await deletePost;
+      res.status(200).json({ message: "게시글을 삭제하였습니다." });
 
-          res.status(200).json({ message: "게시글을 삭제하였습니다." });
-        } catch (errer) {
-          return res
-            .status(200)
-            .json({ errorMessage: "게시글이 정상적으로 삭제되지 않았습니다." });
-        }
-      } else {
-        res
-          .status(403)
-          .json({ errorMessage: "게시글의 삭제 권한이 존재하지 않습니다." });
-      }
+      return post;
     } catch (error) {
       console.error(error);
-      return res
-        .status(400)
-        .json({ errorMessage: "게시글 삭제에 실패하였습니다." });
+      if (Boom.isBoom(error)) {
+        res
+          .status(error.output.statusCode)
+          .json({ errorMessage: error.output.payload.message });
+      } else {
+        res.status(500).json({ errorMessage: error.message });
+      }
     }
   };
 }
