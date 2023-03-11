@@ -8,7 +8,6 @@ class AuthController {
 
   authLogin = async (req, res, next) => {
     const { nickname, password } = req.body;
-
     try {
       const findAuth = await this.authService.findAuth(nickname);
 
@@ -26,7 +25,8 @@ class AuthController {
       res.cookie("Authorization", `Bearer ${token}`);
       res.status(200).json({ token });
     } catch (error) {
-      return res.status(400).json({ errorMessage: "로그인에 실패하였습니다." });
+      console.log(error.message);
+      return res.status(error.status).json({ errorMessage: error.message });
     }
   };
 }

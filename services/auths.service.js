@@ -7,8 +7,13 @@ class AuthService {
   }
 
   findAuth = async (nickname) => {
+    // if (nickname == "qwer") {
+    //   const error = new Error("에러입니다.");
+    //   error.status = 400;
+    //   throw error;
+    // }
     const user = await this.authRepository.findOneUser(nickname);
-
+    console.log(user);
     return user;
   };
 }
