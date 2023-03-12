@@ -25,14 +25,19 @@ class CommentsController {
       return res.status(200).json({ message: updateComment });
     } catch (error) {
       if (Boom.isBoom(error)) {
-        logger.log("error", error.message);
+        logger.log(
+          "error",
+          `${error.message} / userId : ${userId} / postId : ${postId} / commentId : ${commentId}`
+        );
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        logger.log("error", error.message);
+        logger.log(
+          "error",
+          `${error.message} / userId : ${userId} / postId : ${postId} / commentId : ${commentId}`
+        );
         res.status(400).json({ errorMessage: "댓글 수정에 실패하였습니다." });
-        console.error(error.message);
       }
     }
   };
@@ -47,12 +52,12 @@ class CommentsController {
       return res.status(200).json({ comments: getComments });
     } catch (error) {
       if (Boom.isBoom(error)) {
-        logger.log("error", error.message);
+        logger.log("error", `${error.message} / postId : ${postId}`);
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        logger.log("error", error.message);
+        logger.log("error", `${error.message} / postId : ${postId}`);
         res.status(400).json({ errorMessage: "댓글 조회에 실패하였습니다." });
         console.error(error.message);
       }
@@ -75,12 +80,18 @@ class CommentsController {
       return res.status(200).json({ message: createComment });
     } catch (error) {
       if (Boom.isBoom(error)) {
-        logger.log("error", error.message);
+        logger.log(
+          "error",
+          `${error.message} / userId : ${userId} / postId : ${postId}`
+        );
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        logger.log("error", error.message);
+        logger.log(
+          "error",
+          `${error.message} / userId : ${userId} / postId : ${postId}`
+        );
         res.status(400).json({ errorMessage: "댓글 작성에 실패하였습니다." });
         console.error(error.message);
       }
@@ -105,12 +116,18 @@ class CommentsController {
       return res.status(200).json({ message: deleteOne });
     } catch (error) {
       if (Boom.isBoom(error)) {
-        logger.log("error", error.message);
+        logger.log(
+          "error",
+          `${error.message} / userId : ${userId} / postId : ${postId} / commentId : ${commentId}`
+        );
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        logger.log("error", error.message);
+        logger.log(
+          "error",
+          `${error.message} / userId : ${userId} / postId : ${postId} / commentId : ${commentId}`
+        );
         res.status(400).json({ errorMessage: "댓글 삭제에 실패하였습니다." });
         console.error(error.message);
       }

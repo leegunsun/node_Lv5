@@ -37,12 +37,12 @@ class PostController {
       return;
     } catch (error) {
       if (Boom.isBoom(error)) {
-        logger.log("error", error.message);
+        logger.log("error", `${error.message} / postId : ${postId}`);
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        logger.log("error", error.message);
+        logger.log("error", `${error.message} / postId : ${postId}`);
         res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." });
         console.error(error.message);
       }
@@ -62,12 +62,12 @@ class PostController {
       return newPost;
     } catch (error) {
       if (Boom.isBoom(error)) {
-        logger.log("error", error.message);
+        logger.log("error", `${error.message} / userId : ${userId}`);
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        logger.log("error", error.message);
+        logger.log("error", `${error.message} / userId : ${userId}`);
         res.status(400).json({ errorMessage: "게시글 작성에 실패하였습니다." });
         console.error(error.message);
       }
@@ -93,12 +93,18 @@ class PostController {
       return updatePost;
     } catch {
       if (Boom.isBoom(error)) {
-        logger.log("error", error.message);
+        logger.log(
+          "error",
+          `${error.message} / userId : ${userId} / postId : ${postId}`
+        );
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        logger.log("error", error.message);
+        logger.log(
+          "error",
+          `${error.message} / userId : ${userId} / postId : ${postId}`
+        );
         res.status(400).json({ errorMessage: "게시글 수정에 실패하였습니다." });
         console.error(error.message);
       }
@@ -119,12 +125,18 @@ class PostController {
     } catch (error) {
       console.error(error);
       if (Boom.isBoom(error)) {
-        logger.log("error", error.message);
+        logger.log(
+          "error",
+          `${error.message} / userId : ${userId} / postId : ${postId}`
+        );
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        logger.log("error", error.message);
+        logger.log(
+          "error",
+          `${error.message} / userId : ${userId} / postId : ${postId}`
+        );
         res.status(400).json({ errorMessage: "게시글 삭제에 실패하였습니다." });
         console.error(error.message);
       }

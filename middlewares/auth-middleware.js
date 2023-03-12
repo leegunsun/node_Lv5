@@ -13,13 +13,14 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const { userId } = jwt.verify(token, "customized-secret-key");
+    const { userId } = jwt.verify(token, "customized-secret-key", {
+      expiresIn: "1h",
+    });
     const user = await User.findOne({ userId });
 
     res.locals.user = user;
     next();
   } catch (error) {
-    console.error(error);
     res
       .status(403)
       .json({ errorMessage: "전달된 쿠키에서 오류가 발생하였습니다." });
