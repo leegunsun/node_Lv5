@@ -72,7 +72,7 @@ class PostController {
 
     try {
       const post = await this.postService.getFindOne(postId);
-      console.log(title);
+
       const updatePost = await this.postService.updatePost(
         post,
         title,

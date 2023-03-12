@@ -7,6 +7,13 @@ class AuthRepository {
     });
     return findOneUser;
   };
+
+  findOneUserId = async (userId) => {
+    const findOneUser = await User.findOne({
+      userId,
+    });
+    return findOneUser;
+  };
 }
 
 module.exports = AuthRepository;
