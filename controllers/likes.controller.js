@@ -37,8 +37,8 @@ class LikeController {
           .json({ errorMessage: error.output.payload.message });
       } else {
         res
-          .status(500)
-          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+          .status(400)
+          .json({ errorMessage: "게시글 좋아요에 실패하였습니다." });
         console.error(error.message);
       }
     }

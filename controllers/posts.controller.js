@@ -18,9 +18,7 @@ class PostController {
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        res
-          .status(500)
-          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+        res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." });
         console.error(error.message);
       }
     }
@@ -40,9 +38,7 @@ class PostController {
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        res
-          .status(500)
-          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+        res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." });
         console.error(error.message);
       }
     }
@@ -65,9 +61,7 @@ class PostController {
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        res
-          .status(500)
-          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+        res.status(400).json({ errorMessage: "게시글 작성에 실패하였습니다." });
         console.error(error.message);
       }
     }
@@ -96,9 +90,7 @@ class PostController {
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        res
-          .status(500)
-          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+        res.status(400).json({ errorMessage: "게시글 수정에 실패하였습니다." });
         console.error(error.message);
       }
     }
@@ -122,9 +114,7 @@ class PostController {
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        res
-          .status(500)
-          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+        res.status(400).json({ errorMessage: "게시글 삭제에 실패하였습니다." });
         console.error(error.message);
       }
     }
