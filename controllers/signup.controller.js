@@ -26,7 +26,10 @@ class SignupController {
           .json({ errorMessage: errorOutput.payload.message });
       } else {
         // 그 외의 일반적인 에러인 경우, 500 상태 코드와 함께 에러 메시지를 보냅니다.
-        res.status(500).json({ message: error.message });
+        res
+          .status(500)
+          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+        console.error(error.message);
       }
     }
   };

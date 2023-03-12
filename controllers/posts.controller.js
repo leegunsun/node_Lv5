@@ -18,7 +18,10 @@ class PostController {
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        res.status(500).json({ errorMessage: error.message });
+        res
+          .status(500)
+          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+        console.error(error.message);
       }
     }
   };
@@ -37,7 +40,10 @@ class PostController {
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        res.status(500).json({ errorMessage: error.message });
+        res
+          .status(500)
+          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+        console.error(error.message);
       }
     }
   };
@@ -59,7 +65,10 @@ class PostController {
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        res.status(500).json({ errorMessage: error.message });
+        res
+          .status(500)
+          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+        console.error(error.message);
       }
     }
   };
@@ -87,7 +96,10 @@ class PostController {
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        res.status(500).json({ errorMessage: error.message });
+        res
+          .status(500)
+          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+        console.error(error.message);
       }
     }
   };
@@ -110,7 +122,10 @@ class PostController {
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        res.status(500).json({ errorMessage: error.message });
+        res
+          .status(500)
+          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+        console.error(error.message);
       }
     }
   };

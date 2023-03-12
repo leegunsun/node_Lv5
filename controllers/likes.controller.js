@@ -15,9 +15,8 @@ class LikeController {
     try {
       return res.status(200).json({ posts: findLikesPost });
     } catch (error) {
-      return res
-        .status(400)
-        .json({ errorMessage: "좋아요 게시글 조회에 실패하였습니다." });
+      res.status(400).json({ message: "좋아요 게시글 조회에 실패하였습니다." });
+      console.error(error.message);
     }
   };
 
@@ -37,7 +36,10 @@ class LikeController {
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
-        res.status(500).json({ errorMessage: error.message });
+        res
+          .status(500)
+          .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
+        console.error(error.message);
       }
     }
   };
