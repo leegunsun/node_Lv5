@@ -1,4 +1,5 @@
 const LikeService = require("../services/likes.service");
+const logger = require("../config/winston");
 const Boom = require("boom");
 
 class LikeController {
@@ -15,6 +16,7 @@ class LikeController {
     try {
       return res.status(200).json({ posts: findLikesPost });
     } catch (error) {
+      logger.log("error", error.message);
       res.status(400).json({ message: "좋아요 게시글 조회에 실패하였습니다." });
       console.error(error.message);
     }
@@ -32,10 +34,12 @@ class LikeController {
       return;
     } catch (error) {
       if (Boom.isBoom(error)) {
+        logger.log("error", error.message);
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
+        logger.log("error", error.message);
         res
           .status(400)
           .json({ errorMessage: "게시글 좋아요에 실패하였습니다." });

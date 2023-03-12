@@ -1,4 +1,5 @@
 const PostService = require("../services/posts.service");
+const logger = require("../config/winston");
 const Boom = require("boom");
 
 class PostController {
@@ -14,10 +15,12 @@ class PostController {
       return;
     } catch (error) {
       if (Boom.isBoom(error)) {
+        logger.log("error", error.message);
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
+        logger.log("error", error.message);
         res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." });
         console.error(error.message);
       }
@@ -34,10 +37,12 @@ class PostController {
       return;
     } catch (error) {
       if (Boom.isBoom(error)) {
+        logger.log("error", error.message);
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
+        logger.log("error", error.message);
         res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." });
         console.error(error.message);
       }
@@ -57,10 +62,12 @@ class PostController {
       return newPost;
     } catch (error) {
       if (Boom.isBoom(error)) {
+        logger.log("error", error.message);
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
+        logger.log("error", error.message);
         res.status(400).json({ errorMessage: "게시글 작성에 실패하였습니다." });
         console.error(error.message);
       }
@@ -86,10 +93,12 @@ class PostController {
       return updatePost;
     } catch {
       if (Boom.isBoom(error)) {
+        logger.log("error", error.message);
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
+        logger.log("error", error.message);
         res.status(400).json({ errorMessage: "게시글 수정에 실패하였습니다." });
         console.error(error.message);
       }
@@ -110,10 +119,12 @@ class PostController {
     } catch (error) {
       console.error(error);
       if (Boom.isBoom(error)) {
+        logger.log("error", error.message);
         res
           .status(error.output.statusCode)
           .json({ errorMessage: error.output.payload.message });
       } else {
+        logger.log("error", error.message);
         res.status(400).json({ errorMessage: "게시글 삭제에 실패하였습니다." });
         console.error(error.message);
       }
