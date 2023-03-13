@@ -22,7 +22,6 @@ class PostController {
       } else {
         logger.log("error", error.message);
         res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." });
-        console.error(error.message);
       }
     }
   };
@@ -44,7 +43,6 @@ class PostController {
       } else {
         logger.log("error", `${error.message} / postId : ${postId}`);
         res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." });
-        console.error(error.message);
       }
     }
   };
@@ -69,7 +67,6 @@ class PostController {
       } else {
         logger.log("error", `${error.message} / userId : ${userId}`);
         res.status(400).json({ errorMessage: "게시글 작성에 실패하였습니다." });
-        console.error(error.message);
       }
     }
   };
@@ -106,7 +103,6 @@ class PostController {
           `${error.message} / userId : ${userId} / postId : ${postId}`
         );
         res.status(400).json({ errorMessage: "게시글 수정에 실패하였습니다." });
-        console.error(error.message);
       }
     }
   };
@@ -123,7 +119,6 @@ class PostController {
 
       return post;
     } catch (error) {
-      console.error(error);
       if (Boom.isBoom(error)) {
         logger.log(
           "error",
@@ -138,7 +133,6 @@ class PostController {
           `${error.message} / userId : ${userId} / postId : ${postId}`
         );
         res.status(400).json({ errorMessage: "게시글 삭제에 실패하였습니다." });
-        console.error(error.message);
       }
     }
   };

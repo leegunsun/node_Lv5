@@ -1,4 +1,5 @@
 const SignupService = require("../services/signup.service");
+const logger = require("../config/winston");
 const Boom = require("boom");
 
 class SignupController {
@@ -31,7 +32,6 @@ class SignupController {
         res
           .status(500)
           .json({ message: "요청한 데이터 형식이 올바르지 않습니다." });
-        console.error(error.message);
       }
     }
   };

@@ -1,4 +1,6 @@
 const User = require("../schemas/user");
+const crypto = require("crypto");
+const Boom = require("boom");
 
 class SignupRepository {
   findSortUserId = async () => {
@@ -15,9 +17,36 @@ class SignupRepository {
   };
 
   createSignup = async (nickname, password, userId) => {
-    const createUser = new User({ nickname, password, userId });
+    const createHashedPassword = (password) => {
+      crypto.randomBytes(32, (err, buf) => {
+        if (err) {
+          throw err;
+        }
+        const salt = buf.toString("base64");
+        crypto.pbkdf2(
+          password,
+          salt,
+          1000,
+          32,
+          "sha512",
+          (err, hashedPassword) => {
+            if (err) {
+              throw err;
+            }
+            const pbkdf2Key = hashedPassword.toString("base64");
+            const createUser = new User({
+              nickname,
+              hashedPassword: pbkdf2Key,
+              salt,
+              userId,
+            });
 
-    return await createUser.save();
+            return createUser.save();
+          }
+        );
+      });
+    };
+    return createHashedPassword(password);
   };
 }
 

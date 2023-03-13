@@ -59,7 +59,6 @@ class CommentsController {
       } else {
         logger.log("error", `${error.message} / postId : ${postId}`);
         res.status(400).json({ errorMessage: "댓글 조회에 실패하였습니다." });
-        console.error(error.message);
       }
     }
   };
@@ -93,7 +92,6 @@ class CommentsController {
           `${error.message} / userId : ${userId} / postId : ${postId}`
         );
         res.status(400).json({ errorMessage: "댓글 작성에 실패하였습니다." });
-        console.error(error.message);
       }
     }
   };
@@ -129,7 +127,6 @@ class CommentsController {
           `${error.message} / userId : ${userId} / postId : ${postId} / commentId : ${commentId}`
         );
         res.status(400).json({ errorMessage: "댓글 삭제에 실패하였습니다." });
-        console.error(error.message);
       }
     }
   };

@@ -18,7 +18,6 @@ class LikeController {
     } catch (error) {
       logger.log("error", `${error.message} / userId : ${userId}`);
       res.status(400).json({ message: "좋아요 게시글 조회에 실패하였습니다." });
-      console.error(error.message);
     }
   };
 
@@ -49,7 +48,6 @@ class LikeController {
         res
           .status(400)
           .json({ errorMessage: "게시글 좋아요에 실패하였습니다." });
-        console.error(error.message);
       }
     }
   };
