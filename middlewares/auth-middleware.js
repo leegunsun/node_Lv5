@@ -7,8 +7,7 @@ const logger = require("../config/winston");
 dotenv.config();
 
 module.exports = async (req, res, next) => {
-  const { Authorization } = req.cookies;
-  const { refreshToken } = req.cookies;
+  const { Authorization, refreshToken } = req.cookies;
 
   const [tokenType, token] = (Authorization ?? "").split(" ");
   const [refTokenType, refToken] = (refreshToken ?? "").split(" ");
