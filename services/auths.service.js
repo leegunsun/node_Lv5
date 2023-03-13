@@ -2,7 +2,10 @@ const AuthRepository = require("../repositories/auths.repository");
 const jwt = require("jsonwebtoken");
 const Boom = require("boom");
 const crypto = require("crypto");
+const dotenv = require("dotenv");
+dotenv.config();
 
+// 실패시 dotenv 확인해야함
 class AuthService {
   constructor() {
     this.authRepository = new AuthRepository();
@@ -11,7 +14,7 @@ class AuthService {
   login = async (nickname, password) => {
     const findAuth = await this.authRepository.findOneUser(nickname);
 
-    // findAuth.salt의 값을 받아와서 내가 직접 입력한 키워드와 합치고 값을 비교해 본다.
+    // findAuth.salt의 값을 받아와서 직접 입력한 키워드와 합치고 값을 비교해 본다.
     const createHashedPassword = (password, findAuth) => {
       const findAuth_salt = findAuth.salt;
       const findAuth_hashedPassword = findAuth.hashedPassword;
@@ -36,12 +39,22 @@ class AuthService {
     };
 
     createHashedPassword(password, findAuth);
+    // 실패시 dotenv 확인해야함
+    const token = jwt.sign({ userId: findAuth.userId }, process.env.TOKEN_KEY, {
+      expiresIn: "10m",
+    });
 
-    const token = jwt.sign(
-      { userId: findAuth.userId },
-      "customized-secret-key"
+    return token;
+  };
+
+  // 클라이언트에게 리프레쉬 토큰을 발급해주고 서버에도 저장합니다.
+  refreshToken = async (nickname) => {
+    const token = jwt.sign({}, process.env.TOKEN_KEY, { expiresIn: "7d" });
+    const addRefreshToken = await this.authRepository.refreshToken(
+      nickname,
+      token
     );
-
+    addRefreshToken;
     return token;
   };
 }
